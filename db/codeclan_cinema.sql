@@ -6,7 +6,8 @@ DROP TABLE IF EXISTS films;
 CREATE TABLE customers(
   id SERIAL4 PRIMARY KEY,
   name VARCHAR(255),
-  funds NUMERIC
+  --- Better to specify 
+  funds NUMERIC(20,2)
 );
 
 CREATE TABLE films(
