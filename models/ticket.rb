@@ -22,6 +22,7 @@ class Ticket
     "
     result = SqlRunner.run(sql).first
     @id = result.fetch('id').to_i
+    return result
   end
 
   def delete
@@ -44,5 +45,13 @@ class Ticket
     return tickets.map {|ticket| Ticket.new(ticket)}
   end
 
+  def self.sell_ticket( film_id, customer )
+    price = Film.get_price( film_id )
+    if customer.funds >= price
+      customer.debit( price )
+      ticket = Ticket.new( 'film_id' => film_id, 'customer_id' => customer.id )
+      ticket.save
+    end
+  end
 
 end 
