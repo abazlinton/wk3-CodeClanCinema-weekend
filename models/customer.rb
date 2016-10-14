@@ -1,6 +1,3 @@
-
-
-
 class Customer
 
   attr_reader :id, :funds
