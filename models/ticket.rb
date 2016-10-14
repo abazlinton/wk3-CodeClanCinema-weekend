@@ -51,7 +51,10 @@ class Ticket
       customer.debit( price )
       ticket = Ticket.new( 'film_id' => film_id, 'customer_id' => customer.id )
       ticket.save
+      return ticket
+    else return nil
     end
+
   end
 
 end 

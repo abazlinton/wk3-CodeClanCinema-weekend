@@ -10,7 +10,7 @@ Film.delete_all
 
 # test = SqlRunner.run("INSERT INTO customers(name, funds) VALUES('Alex', 9.9)")
 
-customer1 = Customer.new('name' => 'Alex', 'funds' => '50.00')
+customer1 = Customer.new('name' => 'Alex', 'funds' => '20.00')
 customer1.save
 puts customer1.inspect
 
