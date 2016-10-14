@@ -13,7 +13,7 @@ CREATE TABLE customers(
 CREATE TABLE films(
   id SERIAL4 PRIMARY KEY,
   title VARCHAR(255),
-  price NUMERIC
+  price NUMERIC(5,2)
 );
 
 
