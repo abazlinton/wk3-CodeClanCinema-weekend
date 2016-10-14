@@ -24,10 +24,36 @@ class Customer
     @id = result.fetch('id').to_i
   end
 
+  def update
+    sql = "UPDATE customers SET
+      name = '#{@name}',
+      funds = #{funds}
+      WHERE id = #{@id}
+      RETURNING *"
+    result = SqlRunner.run(sql).first
+    return result
+  end
+
+  def delete
+    sql = "DELETE from customers WHERE id = #{@id}"
+    result = SqlRunner.run(sql)
+  end
+
   def self.delete_all
     sql = "DELETE from customers"
     SqlRunner.run(sql)
   end
+
+  def self.all
+    sql = "SELECT * from customers"
+    return Customer.map_items(sql)
+  end
+
+  def self.map_items(sql)
+    customers = SqlRunner.run(sql)
+    return customers.map {|customer| Customer.new(customer)}
+  end
+
 
 
 end 
