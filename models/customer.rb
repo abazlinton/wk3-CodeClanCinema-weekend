@@ -1,22 +1,25 @@
 class Customer
 
-  attr_reader :id, :funds
+  attr_reader :id, :funds, :person_type
   attr_accessor :name
 
   def initialize(options)
-    @id = options.fetch('id').to_i if options['id']
-    @name = options.fetch('name')
-    @funds = options.fetch('funds').to_f
+    @id = options['id'].to_i if options['id']
+    @name = options['name']
+    @funds = options['funds'].to_f
+    @person_type = options['person_type']
   end
 
   def save
     sql = "INSERT INTO customers(
     name, 
-    funds
+    funds,
+    person_type
     )
     VALUES(
     '#{@name}',
-    #{@funds}
+    #{@funds},
+    '#{@person_type}'
     )
     RETURNING *
     "
@@ -28,7 +31,8 @@ class Customer
   def update
     sql = "UPDATE customers SET
       name = '#{@name}',
-      funds = #{funds}
+      funds = #{@funds},
+      person_type = '#{@person_type}'
       WHERE id = #{@id}
       RETURNING *"
     result = SqlRunner.run(sql).first

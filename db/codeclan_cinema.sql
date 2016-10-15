@@ -42,8 +42,7 @@ CREATE TABLE tickets(
   id SERIAL4 PRIMARY KEY,
   customer_id INT4 REFERENCES customers(id),
   showing_id INT4 REFERENCES showings(id),
-  price_id INT4 REFERENCES pricings(id),
-  price_paid INT4
+  price_id INT4 REFERENCES pricings(id)
 );
 
 

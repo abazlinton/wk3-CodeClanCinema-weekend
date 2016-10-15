@@ -4,19 +4,22 @@ class Ticket
   attr_accessor :customer_id, :film_id
 
   def initialize(options)
-    @id = options.fetch('id').to_i if options['id']
-    @customer_id = options.fetch('customer_id').to_i
-    @film_id = options.fetch('film_id').to_i
+    @id = options['id'].to_i if options['id']
+    @customer_id = options['customer_id'].to_i
+    @showing_id = options['showing_id'].to_i
+    @price_id = options['price_id'].to_i
   end
 
   def save
     sql = "INSERT INTO tickets(
     customer_id, 
-    film_id
+    showing_id,
+    price_id
     )
     VALUES(
     #{@customer_id},
-    #{@film_id}
+    #{@showing_id},
+    #{@price_id}
     )
     RETURNING *
     "

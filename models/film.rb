@@ -1,22 +1,26 @@
+require 'date'
 class Film
 
-  attr_reader :id, :price
+  attr_reader :id, :price, :release_date
   attr_accessor :title
 
   def initialize(options) 
     @id = options['id'].to_i if options['id']
     @title = options['title']
-    @price = options['price'].to_f
+    @film_type = options['film_type']
+    @release_date = options['release_date']
   end
 
   def save
     sql = "INSERT INTO films(
     title, 
-    price
+    film_type,
+    release_date
     )
     VALUES(
     '#{@title}',
-    #{@price}
+    '#{@film_type}',
+    '#{@release_date}'
     )
     RETURNING *
     "
@@ -28,7 +32,8 @@ class Film
   def update
     sql = "UPDATE films SET
       title = '#{@title}',
-      price = #{@price}
+      film_type = '#{@film_type}',
+      date = '#{@release_date}'
       WHERE id = #{@id}
       RETURNING *"
     result = SqlRunner.run(sql).first
