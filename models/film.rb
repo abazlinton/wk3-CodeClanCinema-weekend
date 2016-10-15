@@ -21,7 +21,7 @@ class Film
     RETURNING *
     "
     result = SqlRunner.run(sql).first
-    @id = result.fetch('id').to_i
+    @id = result['id'].to_i
     return result
   end
 

@@ -1,12 +1,12 @@
-class Customer
+[class Customer
 
   attr_reader :id, :funds
   attr_accessor :name
 
   def initialize(options)
-    @id = options.fetch('id').to_i if options['id']
-    @name = options.fetch('name')
-    @funds = options.fetch('funds').to_f
+    @id = options['id'].to_i if options['id']
+    @name = options['name']
+    @funds = options['funds'].to_f
   end
 
   def save
@@ -21,7 +21,7 @@ class Customer
     RETURNING *
     "
     result = SqlRunner.run(sql).first
-    @id = result.fetch('id').to_i
+    @id = result['id'].to_i
     return result
   end
 
