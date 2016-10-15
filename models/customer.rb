@@ -35,8 +35,7 @@ class Customer
       person_type = '#{@person_type}'
       WHERE id = #{@id}
       RETURNING *"
-    result = SqlRunner.run(sql).first
-    return result
+    return Customer.map_item(sql)
   end
 
   def delete
@@ -46,8 +45,9 @@ class Customer
 
   def films
     sql = "SELECT f.* FROM films f 
-      INNER JOIN tickets t ON f.id = t.film_id
-        INNER JOIN customers c ON t.customer_id = c.id WHERE c.id = #{@id}"
+      INNER JOIN showings s ON s.film_id = f.id 
+        INNER JOIN tickets t ON s.id = t.showing_id
+          INNER JOIN customers c ON t.customer_id = c.id WHERE c.id = #{@id}"
     return Film.map_items(sql)
   end
 
@@ -77,6 +77,10 @@ class Customer
   def self.map_items(sql)
     customers = SqlRunner.run(sql)
     return customers.map {|customer| Customer.new(customer)}
+  end
+
+  def self.map_item(sql)
+    return Customer.map_items(sql).first
   end
 
 

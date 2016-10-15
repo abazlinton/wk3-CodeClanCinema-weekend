@@ -2,11 +2,16 @@ require './db/sql_runner'
 require_relative './models/customer'
 require_relative './models/film'
 require_relative './models/ticket'
+require_relative './models/showing'
+
 require 'pry-byebug'
 
 Ticket.delete_all
 Customer.delete_all
-# Film.delete_all
+Showing.delete_all
+Film.delete_all
+
+SqlRunner.run("INSERT INTO pricings(film_type, person_type, price) VALUES('premium', 'student', 20)")
 
 # test = SqlRunner.run("INSERT INTO customers(name, funds) VALUES('Alex', 9.9)")
 
@@ -36,7 +41,11 @@ film3 = Film.new('title' => 'Inferno', 'film_type' => 'premium', 'release_date' 
 film3.save
 puts film3.inspect
 
-ticket1 = Ticket.new('customer_id' => customer1.id, 'showing_id' => 2, 'price_id' => 1)
+showing1 = Showing.new('showing_time' => '20:00', 'film_id' => film1.id)
+showing1.save
+puts showing1.inspect
+
+ticket1 = Ticket.new('customer_id' => customer1.id, 'showing_id' => showing1.id, 'price_id' => 1)
 ticket1.save
 puts ticket1.inspect
 

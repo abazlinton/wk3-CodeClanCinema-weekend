@@ -34,7 +34,7 @@ CREATE TABLE pricings(
 
 CREATE TABLE showings(
 id SERIAL4 PRIMARY KEY,
-showing_time NUMERIC(6,2),
+showing_time time,
 film_id INT4 REFERENCES films(id)
 );
 

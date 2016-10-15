@@ -33,11 +33,10 @@ class Film
     sql = "UPDATE films SET
       title = '#{@title}',
       film_type = '#{@film_type}',
-      date = '#{@release_date}'
+      release_date = '#{@release_date}'
       WHERE id = #{@id}
       RETURNING *"
-    result = SqlRunner.run(sql).first
-    return result
+    return Film.map_item(sql)
   end
 
   def delete
@@ -48,7 +47,8 @@ class Film
   def customers
     sql = "SELECT c.* from customers c 
       INNER JOIN tickets t ON c.id = t.customer_id 
-        INNER JOIN films f ON t.film_id = f.id WHERE f.id = #{@id}"
+        INNER JOIN showings s ON t.showing_id = s.id
+          INNER JOIN films f ON s.film_id = f.id WHERE f.id = #{@id}"
     return Customer.map_items(sql)
   end
 
