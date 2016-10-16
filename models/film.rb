@@ -39,6 +39,19 @@ class Film
     return Film.map_item(sql)
   end
 
+  def self.most_popular_showing( film )
+    sql = "SELECT s.showing_time, count(*) 
+      FROM tickets t 
+        INNER JOIN showings s ON t.showing_id = s.id 
+          INNER JOIN films f ON s.film_id = f.id 
+            WHERE f.id = #{film.id}
+              GROUP BY s.showing_time
+                ORDER BY count DESC"
+    result = SqlRunner.run(sql)
+    return result.to_a
+  end
+
+
   def delete
     sql = "DELETE from films WHERE id = #{@id}"
     result = SqlRunner.run(sql)
