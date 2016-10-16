@@ -39,8 +39,6 @@ class Ticket
      SqlRunner.run(sql)
   end
 
-  
-
   def delete
     sql = "DELETE FROM tickets WHERE id = #{@id}"
     SqlRunner.run(sql)
@@ -89,9 +87,6 @@ class Ticket
   end
 
   def self.sell_ticket( showing, customer )
-    # price = Film.get_price( film_id )
-    
-    # end
     film_type = showing.film.film_type
     person_type = customer.person_type
     pricing = Pricing.get_pricing( film_type, person_type)
@@ -108,7 +103,6 @@ class Ticket
       return ticket
     else return nil
     end
-
   end
 
 

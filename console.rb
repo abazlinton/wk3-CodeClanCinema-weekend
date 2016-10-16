@@ -48,21 +48,16 @@ showing2 = Showing.new('showing_time' => '17:00', 'film_id' => film3.id)
 showing2.save
 puts showing2.inspect
 
+showing3 = Showing.new('showing_time' => '19:30', 'film_id' => film3.id)
+showing3.save
+puts showing3.inspect
+
 pricing1 = Pricing.new('film_type' => 'premium', 'person_type' => 'student', 'price' => 10)
 pricing1.save
-puts pricing1.inspect
+pricing2 = Pricing.new('film_type' => 'premium', 'person_type' => 'senior', 'price' => 9)
+pricing2.save
 
-ticket1 = Ticket.new('customer_id' => customer1.id, 'showing_id' => showing1.id, 'price_id' => pricing1.id)
-ticket1.save
-puts ticket1.inspect
-
-ticket2 = Ticket.new('customer_id' => customer2.id, 'showing_id' => showing2.id, 'price_id' => pricing1.id)
-ticket2.save
-puts ticket2.inspect
-
-# ticket2.release_date_multiplier
-# ticket2.off_peak_multiplier
-
+ticket1 = Ticket.sell_ticket(showing1, customer3)
 ticket3 = Ticket.sell_ticket(showing2, customer1)
 
 
