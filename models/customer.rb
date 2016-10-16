@@ -23,8 +23,8 @@ class Customer
     )
     RETURNING *
     "
-    result = SqlRunner.run(sql).first
-    @id = result['id'].to_i
+    result = Customer.map_item(sql)
+    @id = result.id
     return result
   end
 

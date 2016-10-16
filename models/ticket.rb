@@ -1,6 +1,6 @@
 class Ticket
 
-  attr_reader :id
+  attr_reader :id, :showing_id
   attr_accessor :customer_id, :film_id
 
   def initialize(options)
@@ -23,29 +23,37 @@ class Ticket
     )
     RETURNING *
     "
-    result = SqlRunner.run(sql).first
-    @id = result['id'].to_i
+    result = Ticket.map_item(sql)
+    @id = result.id
     return result
   end
 
   def delete
-    sql = "DELETE from tickets WHERE id = #{@id}"
+    sql = "DELETE FROM tickets WHERE id = #{@id}"
     SqlRunner.run(sql)
   end
 
   def film
-    sql = "SELECT * from films f
+    sql = "SELECT f.* FROM films f
       INNER JOIN showings s ON f.id = s.film_id
-        INNER JOIN tickets t ON s.id = t.showing_id WHERE t.id = #{@id}"
+        INNER JOIN tickets t ON s.id = t.showing_id WHERE s.id = #{@showing_id}"
     return Film.map_item(sql)
   end
+
+  def time
+    sql = "SELECT s.* FROM showings s
+      INNER JOIN tickets t ON t.showing_id = s.id WHERE s.id = #{@showing_id}"
+    result = Showing.map_item(sql)
+    return result.showing_time
+  end
+
 
   def customer
     sql = "SELECT * FROM customers c
       INNER JOIN tickets t ON c.id = t.customer_id
         WHERE t.id = #{@id}"
       return Customer.map_item(sql)
-    end
+  end
 
 
   def self.delete_all
@@ -67,7 +75,7 @@ class Ticket
     return Ticket.map_items(sql).first
   end
 
-  def self.sell_ticket( film_id, customer )
+  def self.sell_ticket( showing_id, customer )
     price = Film.get_price( film_id )
     if customer.funds >= price
       customer.debit( price )
@@ -78,5 +86,43 @@ class Ticket
     end
 
   end
+
+
+  def release_date_multiplier
+    sql = "SELECT * from films WHERE id = #{film.id}"
+    result = Film.map_item(sql)
+    release_date = Date.parse( result.release_date )
+    now = Date.today
+    days_since_release = (now - release_date).to_i
+    if days_since_release > 30 
+      return 0.80
+    else 
+      return 1.0
+    end
+  end
+
+  def off_peak_multiplier
+    showing_time = time()
+    # showing_time = showing_time[0..4]
+    # showing_time.gsub!(":",".")
+    # showing_time = showing_time.to_f
+    # return 0.8 if showing_time > 17.30
+    # DateTime.parse
+    # dummy_time = Time.local(2001,1,1,17,30,00)
+    # dummy_showing_time = Time.loca(2001,1,1,showing_time)
+    showing_time = DateTime.parse( showing_time )
+    peak_starts = DateTime.parse( "17:30:00" )
+    if showing_time < peak_starts
+      return 0.8
+    else
+      return 1.0
+    end
+  end
+
+
+
+
+  
+
 
 end 

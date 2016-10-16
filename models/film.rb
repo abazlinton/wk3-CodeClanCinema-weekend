@@ -1,7 +1,7 @@
 require 'date'
 class Film
 
-  attr_reader :id, :price, :release_date
+  attr_reader :id, :release_date, :film_type
   attr_accessor :title
 
   def initialize(options) 
@@ -24,8 +24,8 @@ class Film
     )
     RETURNING *
     "
-    result = SqlRunner.run(sql).first
-    @id = result['id'].to_i
+    result = Film.map_item(sql)
+    @id = result.id
     return result
   end
 

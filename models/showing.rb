@@ -22,8 +22,8 @@ class Showing
       )
       RETURNING *
       "
-    result = SqlRunner.run(sql).first
-    @id = result['id'].to_i
+    result = Showing.map_item(sql)
+    @id = result.id
     return result
   end
 
@@ -37,6 +37,13 @@ class Showing
       return Showing.map_item(sql)
   end
 
+  def film
+    sql = "SELECT * from films f
+            INNER JOIN showings s ON f.id = s.film_id
+              WHERE s.id = #{@id}
+    "
+    return Film.map_item(sql)
+  end
 
   def self.delete_all
     sql = "DELETE from showings"
