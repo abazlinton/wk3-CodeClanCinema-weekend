@@ -1,39 +1,58 @@
+require 'date'
 class Film
 
-  attr_reader :id, :price
+  attr_reader :id, :release_date, :film_type
   attr_accessor :title
 
   def initialize(options) 
     @id = options['id'].to_i if options['id']
     @title = options['title']
-    @price = options['price'].to_f
+    @film_type = options['film_type']
+    @release_date = options['release_date']
   end
 
   def save
     sql = "INSERT INTO films(
     title, 
-    price
+    film_type,
+    release_date
     )
     VALUES(
     '#{@title}',
-    #{@price}
+    '#{@film_type}',
+    '#{@release_date}'
     )
     RETURNING *
     "
-    result = SqlRunner.run(sql).first
-    @id = result['id'].to_i
+
+    result = Film.map_item(sql)
+    @id = result.id
+
     return result
   end
 
   def update
     sql = "UPDATE films SET
       title = '#{@title}',
-      price = #{@price}
+      film_type = '#{@film_type}',
+      release_date = '#{@release_date}'
       WHERE id = #{@id}
       RETURNING *"
-    result = SqlRunner.run(sql).first
-    return result
+    return Film.map_item(sql)
   end
+
+  def self.most_popular_showing( film )
+    sql = "SELECT s.showing_time, count(*) 
+      FROM tickets t 
+        INNER JOIN showings s ON t.showing_id = s.id 
+          INNER JOIN films f ON s.film_id = f.id 
+            WHERE f.id = #{film.id}
+              GROUP BY s.showing_time
+                ORDER BY count DESC"
+    result = SqlRunner.run(sql)
+    return result.to_a
+  end
+
 
   def delete
     sql = "DELETE from films WHERE id = #{@id}"
@@ -43,7 +62,8 @@ class Film
   def customers
     sql = "SELECT c.* from customers c 
       INNER JOIN tickets t ON c.id = t.customer_id 
-        INNER JOIN films f ON t.film_id = f.id WHERE f.id = #{@id}"
+        INNER JOIN showings s ON t.showing_id = s.id
+          INNER JOIN films f ON s.film_id = f.id WHERE f.id = #{@id}"
     return Customer.map_items(sql)
   end
 
