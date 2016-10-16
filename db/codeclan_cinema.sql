@@ -45,7 +45,7 @@ CREATE TABLE tickets(
   showing_id INT4 REFERENCES showings(id),
   price_id INT4 REFERENCES pricings(id),
   multiplier_release_date NUMERIC(3,2),
-  multiplier_film_type NUMERIC(3,2)
+  multiplier_off_peak NUMERIC(3,2)
 
 );
 

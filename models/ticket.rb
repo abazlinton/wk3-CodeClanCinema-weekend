@@ -25,8 +25,21 @@ class Ticket
     "
     result = Ticket.map_item(sql)
     @id = result.id
+    update_discounts()
     return result
   end
+
+  def update_discounts
+    sql = "UPDATE tickets SET
+        multiplier_release_date = #{multiplier_release_date()},
+        multiplier_off_peak = #{multiplier_off_peak()}
+        WHERE
+        id = #{@id} 
+     "
+     SqlRunner.run(sql)
+  end
+
+  
 
   def delete
     sql = "DELETE FROM tickets WHERE id = #{@id}"
@@ -75,11 +88,22 @@ class Ticket
     return Ticket.map_items(sql).first
   end
 
-  def self.sell_ticket( showing_id, customer )
-    price = Film.get_price( film_id )
+  def self.sell_ticket( showing, customer )
+    # price = Film.get_price( film_id )
+    
+    # end
+    film_type = showing.film.film_type
+    person_type = customer.person_type
+    pricing = Pricing.get_pricing( film_type, person_type)
+    price_id = pricing.id
+    price = pricing.price
+
     if customer.funds >= price
       customer.debit( price )
-      ticket = Ticket.new( 'film_id' => film_id, 'customer_id' => customer.id )
+      ticket = Ticket.new( \
+        'showing_id' => showing.id, \
+        'customer_id' => customer.id, \
+        'price_id' => price_id)
       ticket.save
       return ticket
     else return nil
@@ -88,28 +112,21 @@ class Ticket
   end
 
 
-  def release_date_multiplier
+  def multiplier_release_date
     sql = "SELECT * from films WHERE id = #{film.id}"
     result = Film.map_item(sql)
     release_date = Date.parse( result.release_date )
     now = Date.today
     days_since_release = (now - release_date).to_i
-    if days_since_release > 30 
+    if days_since_release > 30000 
       return 0.80
     else 
       return 1.0
     end
   end
 
-  def off_peak_multiplier
+  def multiplier_off_peak
     showing_time = time()
-    # showing_time = showing_time[0..4]
-    # showing_time.gsub!(":",".")
-    # showing_time = showing_time.to_f
-    # return 0.8 if showing_time > 17.30
-    # DateTime.parse
-    # dummy_time = Time.local(2001,1,1,17,30,00)
-    # dummy_showing_time = Time.loca(2001,1,1,showing_time)
     showing_time = DateTime.parse( showing_time )
     peak_starts = DateTime.parse( "17:30:00" )
     if showing_time < peak_starts
@@ -118,11 +135,6 @@ class Ticket
       return 1.0
     end
   end
-
-
-
-
-  
 
 
 end 

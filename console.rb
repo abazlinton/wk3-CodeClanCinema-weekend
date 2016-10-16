@@ -60,8 +60,10 @@ ticket2 = Ticket.new('customer_id' => customer2.id, 'showing_id' => showing2.id,
 ticket2.save
 puts ticket2.inspect
 
-ticket2.release_date_multiplier
-ticket2.off_peak_multiplier
+# ticket2.release_date_multiplier
+# ticket2.off_peak_multiplier
+
+ticket3 = Ticket.sell_ticket(showing2, customer1)
 
 
 binding.pry

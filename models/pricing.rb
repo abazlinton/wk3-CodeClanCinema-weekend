@@ -31,6 +31,13 @@ class Pricing
     return result
   end
 
+  def self.get_pricing( film_type, person_type )
+    sql = "SELECT * FROM pricings WHERE
+            film_type = '#{film_type}' AND person_type = '#{person_type}'
+    "
+    result = Pricing.map_item(sql)
+    return result
+  end
 
   def self.delete_all
     sql = "DELETE FROM pricings"
