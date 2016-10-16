@@ -1,8 +1,8 @@
 require 'date'
 class Film
 
-  attr_reader :id, :release_date, :film_type
-  attr_accessor :title
+  attr_reader :id, :release_date, :film_type, :title
+  
 
   def initialize(options) 
     @id = options['id'].to_i if options['id']

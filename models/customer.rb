@@ -1,7 +1,7 @@
 class Customer
 
-  attr_reader :id, :funds, :person_type
-  attr_accessor :name
+  attr_reader :id, :funds 
+  attr_accessor :name, :person_type
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
@@ -56,6 +56,11 @@ class Customer
 
   def debit(amount)
     @funds -= amount
+    update
+  end
+
+  def credit(amount)
+    @funds += amount
     update
   end
 
