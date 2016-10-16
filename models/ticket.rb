@@ -30,8 +30,23 @@ class Ticket
 
   def delete
     sql = "DELETE from tickets WHERE id = #{@id}"
-    result = SqlRunner.run(sql)
+    SqlRunner.run(sql)
   end
+
+  def film
+    sql = "SELECT * from films f
+      INNER JOIN showings s ON f.id = s.film_id
+        INNER JOIN tickets t ON s.id = t.showing_id WHERE t.id = #{@id}"
+    return Film.map_item(sql)
+  end
+
+  def customer
+    sql = "SELECT * FROM customers c
+      INNER JOIN tickets t ON c.id = t.customer_id
+        WHERE t.id = #{@id}"
+      return Customer.map_item(sql)
+    end
+
 
   def self.delete_all
     sql = "DELETE from tickets"
@@ -46,6 +61,10 @@ class Ticket
   def self.map_items(sql)
     tickets = SqlRunner.run(sql)
     return tickets.map {|ticket| Ticket.new(ticket)}
+  end
+
+  def self.map_item(sql)
+    return Ticket.map_items(sql).first
   end
 
   def self.sell_ticket( film_id, customer )

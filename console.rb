@@ -45,9 +45,19 @@ showing1 = Showing.new('showing_time' => '20:00', 'film_id' => film1.id)
 showing1.save
 puts showing1.inspect
 
+showing2 = Showing.new('showing_time' => '17:00', 'film_id' => film2.id)
+showing2.save
+puts showing2.inspect
+
 ticket1 = Ticket.new('customer_id' => customer1.id, 'showing_id' => showing1.id, 'price_id' => 1)
 ticket1.save
 puts ticket1.inspect
+
+ticket2 = Ticket.new('customer_id' => customer2.id, 'showing_id' => showing2.id, 'price_id' => 1)
+ticket2.save
+puts ticket2.inspect
+
+
 
 
 

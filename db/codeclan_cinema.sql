@@ -26,16 +26,17 @@ CREATE TABLE films(
 
 
 CREATE TABLE pricings(
-  id SERIAL4 PRIMARY KEY,
-  film_type film_types,
-  person_type person_types,
-  price NUMERIC(5,2)
+  id SERIAL4 UNIQUE,
+  film_type film_types NOT NULL,
+  person_type person_types NOT NULL,
+  price NUMERIC(5,2),
+  PRIMARY KEY (film_type, person_type)
 );
 
 CREATE TABLE showings(
-id SERIAL4 PRIMARY KEY,
-showing_time time,
-film_id INT4 REFERENCES films(id)
+  id SERIAL4 PRIMARY KEY,
+  showing_time time,
+  film_id INT4 REFERENCES films(id)
 );
 
 CREATE TABLE tickets(
