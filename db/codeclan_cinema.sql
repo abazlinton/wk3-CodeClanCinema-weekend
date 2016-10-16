@@ -1,3 +1,6 @@
+DROP VIEW IF EXISTS sales_by_film;
+DROP VIEW IF EXISTS revenue;
+DROP VIEW IF EXISTS sales;
 DROP TABLE IF EXISTS tickets;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS showings;
@@ -48,5 +51,22 @@ CREATE TABLE tickets(
   multiplier_off_peak NUMERIC(3,2)
 
 );
+
+CREATE VIEW sales AS SELECT 
+  t.id, t.showing_id, p.price AS start_price, 
+    round((p.price * t.multiplier_release_date * t.multiplier_off_peak),2) AS final_price,
+      round((t.multiplier_release_date * t.multiplier_off_peak),2) AS final_multiplier
+      FROM tickets t INNER JOIN pricings p ON t.price_id = p.id;
+
+CREATE VIEW revenue AS SELECT
+  sum(final_price) AS total_revenue FROM sales;
+
+CREATE VIEW sales_by_film AS SELECT 
+  f.title, sum(sa.final_price) 
+    FROM films f 
+      INNER JOIN showings s ON f.id = s.film_id 
+        INNER JOIN sales sa on s.id = sa.showing_id 
+          GROUP BY f.id 
+            ORDER BY f.title;
 
 

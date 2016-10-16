@@ -94,12 +94,13 @@ class Ticket
     price = pricing.price
 
     if customer.funds >= price
-      customer.debit( price )
+      
       ticket = Ticket.new( \
         'showing_id' => showing.id, \
         'customer_id' => customer.id, \
         'price_id' => price_id)
       ticket.save
+      customer.debit( price * ticket.multiplier_release_date * ticket.multiplier_off_peak)
       return ticket
     else return nil
     end
@@ -112,7 +113,7 @@ class Ticket
     release_date = Date.parse( result.release_date )
     now = Date.today
     days_since_release = (now - release_date).to_i
-    if days_since_release > 30000 
+    if days_since_release > 30
       return 0.80
     else 
       return 1.0
