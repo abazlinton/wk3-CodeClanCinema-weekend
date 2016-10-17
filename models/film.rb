@@ -41,12 +41,12 @@ class Film
     return Film.map_item(sql)
   end
 
-  def self.most_popular_showing( film )
+  def most_popular_showing
     sql = "SELECT s.showing_time, count(*) 
       FROM tickets t 
         INNER JOIN showings s ON t.showing_id = s.id 
           INNER JOIN films f ON s.film_id = f.id 
-            WHERE f.id = #{film.id}
+            WHERE f.id = #{@id}
               GROUP BY s.showing_time
                 ORDER BY count DESC"
     result = SqlRunner.run(sql)
